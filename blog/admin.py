@@ -10,3 +10,4 @@ admin.site.index_title = "Welcome to InkWave Admin Portal"
 admin.site.register(Category)
 admin.site.register(Article)
 admin.site.register(Comment)
+admin.site.register(NewsletterSubscription)
