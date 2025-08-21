@@ -1,0 +1,18 @@
+Hi {{ name }},
+
+Thanks for reaching out to InkWave! We’ve received your message and opened a ticket on {{ date|date:"F j, Y" }}.
+
+Our team will get back to you within 24–48 hours (Mon–Fri). If your inquiry is urgent, reply to this email and include “URGENT” in the subject line.
+
+What happens next
+— A team member reads your message and routes it to the right person.
+— We may follow up with a few questions to make sure we understand the request.
+— You’ll receive a resolution or status update as soon as possible.
+
+Helpful notes
+— If you didn’t submit this request, you can safely ignore this email.
+— You can add more details anytime by replying directly to this message.
+
+Warmly,
+The InkWave Team
+inkwaveteam@yahoo.com

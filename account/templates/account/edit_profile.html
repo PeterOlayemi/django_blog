@@ -1,0 +1,102 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+<section class="py-5 text-center" style="background-color: #e0f2f1;">
+    <div class="container">
+        <h1 class="hero-title">Edit Your Profile</h1>
+        <p class="hero-subtitle">Update your personal information and preferences.</p>
+    </div>
+</section>
+
+<div class="form-card" id="profileFormCard">
+    {% if errors %}
+        <div class="alert alert-danger">
+            <ul class="mb-0">
+                {% for error in errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="mb-3">
+            <label for="username" class="form-label">Username</label>
+            <input 
+                type="text" 
+                id="username" 
+                name="username" 
+                class="form-control" 
+                placeholder="Your username" 
+                value="{{ username|default:'' }}"
+                required
+            />
+        </div>
+
+        <div class="mb-3">
+            <label for="email" class="form-label">Email Address</label>
+            <input 
+                type="email" 
+                id="email" 
+                name="email" 
+                class="form-control" 
+                placeholder="Your email" 
+                value="{{ email|default:'' }}" 
+                readonly
+            />
+        </div>
+
+        <div class="mb-3">
+            <label for="bio" class="form-label">Bio</label>
+            <textarea 
+                id="bio" 
+                name="bio" 
+                rows="4" 
+                class="form-control" 
+                placeholder="Tell us a bit about yourself..."
+                required
+            >{{ bio }}</textarea>
+        </div>
+
+        <div class="mb-3">
+            <label for="profilePic" class="form-label">Profile Picture</label>
+            {% if profile_picture %}
+                <div class="mb-2">
+                    <img src="{{ profile_picture.url }}" 
+                         alt="Current profile picture" 
+                         style="max-height:150px; border: 1px solid #ddd; padding: 5px;">
+                </div>
+            {% endif %}
+            <input type="file" id="profilePic" name="profilePic" class="form-control" />
+            <img id="preview" class="img-fluid mt-3 d-none" 
+                 style="max-height: 250px; border: 1px solid #ddd; padding: 5px;" 
+                 alt="Preview">
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="background-color: var(--primary-color);">
+            Save Changes
+        </button>
+    </form>
+</div>
+
+<script>
+document.getElementById('profilePic').addEventListener('change', function(event) {
+    const file = event.target.files[0];
+    const preview = document.getElementById('preview');
+
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+            preview.classList.remove('d-none');
+        }
+        reader.readAsDataURL(file);
+    } else {
+        preview.classList.add('d-none');
+        preview.src = '';
+    }
+});
+</script>
+{% endblock %}

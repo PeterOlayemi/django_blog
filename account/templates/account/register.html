@@ -1,0 +1,73 @@
+{% extends 'account/base_auth.html' %}
+
+{% block content %}
+
+<div class="container">
+    <div class="auth-card bg-white light-mode text-dark" style="border-radius: 12px;">
+        <h3 class="text-center mb-4 mt-4">Create an Account</h3>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="username" class="form-label">Username</label>
+                <input type="text" name="username" value="{{ form_data.username }}" class="form-control" placeholder="Choose a username" required>
+                {% if errors.username %}
+                    <div class="text-danger small">{{ errors.username }}</div>
+                {% endif %}
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">Email Address</label>
+                <input type="email" name="email" value="{{ form_data.email }}" class="form-control" placeholder="Enter your email" required>
+                {% if errors.email %}
+                    <div class="text-danger small">{{ errors.email }}</div>
+                {% endif %}
+            </div>
+            <div class="mb-3">
+                <label for="bio" class="form-label">Bio</label>
+                <textarea name="bio" rows="4" class="form-control" placeholder="Tell us a bit about yourself..." required>{{ form_data.bio }}</textarea>
+            </div>
+            <div class="mb-3">
+                <label for="profilePic" class="form-label">Profile Picture</label>
+                <input type="file" name="profilePic" id="profilePic" class="form-control" required />
+                <img id="profilePicPreview" class="img-fluid mt-3 d-none" 
+                    style="max-height: 250px; border: 1px solid #ddd; padding: 5px;" 
+                    alt="Preview">
+            </div>
+            <div class="mb-3">
+                <label for="password1" class="form-label">Password</label>
+                <input type="password" name="password1" class="form-control" placeholder="Enter your password" required>
+            </div>
+            <div class="mb-3">
+                <label for="password2" class="form-label">Confirm Password</label>
+                <input type="password" name="password2" class="form-control" placeholder="Confirm your password" required>
+                {% if errors.password %}
+                    <div class="text-danger small">{{ errors.password }}</div>
+                {% endif %}
+            </div>
+            <button type="submit" class="btn btn-primary w-100" style="background-color: var(--primary-color)">
+                Register
+            </button>
+        </form>
+        <p class="text-center mt-3">Already have an account? <a href="{% url 'login' %}">Login</a></p>
+    </div>
+</div>
+
+<script>
+document.getElementById('profilePic').addEventListener('change', function(event) {
+    const file = event.target.files[0];
+    const preview = document.getElementById('profilePicPreview');
+    
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+            preview.classList.remove('d-none');
+        }
+        reader.readAsDataURL(file);
+    } else {
+        preview.classList.add('d-none');
+        preview.src = '';
+    }
+});
+</script>
+
+{% endblock %}

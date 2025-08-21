@@ -1,0 +1,168 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+
+<div class="container my-5">
+    <div class="article-header">
+        <h1 class="article-title">{{ article.title|title }}</h1>
+        <p class="article-meta">By <strong>
+                                {% if article.writer == request.user %}
+                                    <a href="{% url 'profile' request.user.username %}">{{ request.user.username|title }} (You)</a>
+                                {% else %}
+                                    <a href="{% url 'profile' article.writer.username %}">{{ article.writer.username|title }}</a>
+                                {% endif %}
+                                </strong> | {{ article.date_added }} | {{ minutes_read }} mins read</p>
+        <div class="mb-2">
+            {% for objects in article.category.all %}
+                <span class="category" style="color: white;"><a href="{% url 'category_article_list' objects.slug %}" style="color: white;">{{ objects.name }}</a></span>
+            {% endfor %}
+        </div>
+        <div>
+            {% for objects in article.tag.all %}
+                <span class="tag">#{{ objects.name }}</span>
+            {% endfor %}
+        </div>
+        {% if article.writer == request.user %}
+            <div class="action-buttons">
+                <a href="{% url 'article_update' article.slug %}" class="btn btn-sm btn-warning"><i class="fa fa-edit"></i> Edit</a>
+                <a href="{% url 'article_delete' article.slug %}" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i> Delete</a>
+            </div>
+        {% endif %}
+    </div>
+
+    <img src="{{ article.image.url }}" class="img-fluid rounded mb-4" alt="Article Image">
+
+    <p>{{ article.content }}</p>
+
+    <div class="my-4">
+        <form method="post" action="{% url 'article_like' article.slug %}">
+            {% csrf_token %}
+            {% if article_is_liked %}
+                <button type="submit" class="btn btn-outline-secondary ms-2"><i class="fa fa-thumbs-down"></i> Unlike <span class="badge bg-secondary">{{ number_of_likes }}</span></button>
+            {% else %}
+                <button type="submit" class="like-btn"><i class="fa fa-thumbs-up"></i> Like <span class="badge bg-light text-dark">{{ number_of_likes }}</span></button>
+            {% endif %}
+        </form>
+    </div>
+
+    <div class="author-box">
+        <img src="{{ article.writer.profile_picture.url }}" alt="Author">
+        <div>
+            <h6><a href="{% url 'profile' article.writer.username %}">{{ article.writer.username|title }}</a></h6>
+            <p class="mb-0">{{ article.writer.bio }}</p>
+        </div>
+    </div>
+
+    <div class="comment-box">
+        <h4>Comments ({{ total_comments }})</h4>
+        
+        {% for comment in comments %}
+            {% if comment.is_parent %}
+                <div class="comment mt-3">
+                    {% if comment.writer == request.user %}
+                        <strong><a href="{% url 'profile' comment.writer.username %}">{{ comment.writer.username|title }}</a></strong> (You)
+                    {% else %}
+                        {% if comment.writer == comment.article.writer %}
+                            <strong><a href="{% url 'profile' comment.writer.username %}">{{ comment.writer.username|title }}</a></strong> (Author)
+                        {% else %}
+                            <strong><a href="{% url 'profile' comment.writer.username %}">{{ comment.writer.username|title }}</a></strong>
+                        {% endif %}
+                    {% endif %}
+                    | {{ comment.date_added }}
+                    <p>{{ comment.content }}</p>
+                    {% if comment.writer == request.user %}
+                        <a href="?edit={{ comment.id }}" class="text-primary small">Edit</a> | <a href="{% url 'comment_delete' comment.slug %}" class="text-primary small">Delete</a>
+                    {% else %}
+                        <a href="?reply={{ comment.id }}" class="text-primary small">Reply</a>
+                    {% endif %}
+
+                    {% if comment_to_be_updated and comment.id == comment_to_be_updated.id %}
+                        <form class="mt-5 ms-4" method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="comment_id" value="{{ comment_to_be_updated.id }}">
+                            <div class="mb-5">
+                                <textarea name="content" class="form-control" rows="3" placeholder="Update comment..." required>{{ comment_to_be_updated.content }}</textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="background-color: var(--primary-color)">Update Comment</button>
+                        </form>
+                    {% endif %}
+
+                    {% if comment_to_be_replied and comment.id == comment_to_be_replied.id %}
+                        <form class="mt-5 ms-4" method="POST" style="margin-top:0;">
+                            {% csrf_token %}
+                            <input type="hidden" name="parent_id" value="{{ comment_to_be_replied.id }}">
+                            <div class="mb-5">
+                                <textarea name="content" class="form-control" rows="3" placeholder="Reply to '{{ comment_to_be_replied.content }}' thread..." required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="background-color: var(--primary-color)">Reply</button>
+                        </form>
+                    {% endif %}
+                </div>
+            {% endif %}
+            {% for reply in comment.children %}
+                <div class="reply ms-4 mt-2">
+                    {% if reply.writer == request.user %}
+                        <strong><a href="{% url 'profile' reply.writer.username %}">{{ reply.writer.username|title }}</a></strong> (You)
+                    {% else %}
+                        {% if reply.writer == reply.article.writer %}
+                            <strong><a href="{% url 'profile' reply.writer.username %}">{{ reply.writer.username|title }}</a></strong> (Author)
+                    {% else %}
+                        <strong><a href="{% url 'profile' reply.writer.username %}">{{ reply.writer.username|title }}</a></strong>
+                        {% endif %}
+                    {% endif %}
+                    | {{ reply.date_added }}
+                    <p>{{ reply.content }}</p>
+                    {% if reply.writer == request.user %}
+                        <a href="?edit={{ reply.id }}" class="text-primary small">Edit</a> | <a href="{% url 'comment_delete' reply.slug %}" class="text-primary small">Delete</a>
+                    {% else %}
+                        <a href="?reply={{ comment.id }}" class="text-primary small">Reply</a>
+                    {% endif %}
+                </div>
+
+                {% if comment_to_be_updated and reply.id == comment_to_be_updated.id %}
+                    <form class="mt-5 ms-4" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="comment_id" value="{{ comment_to_be_updated.id }}">
+                        <div class="mb-5">
+                            <textarea name="content" class="form-control" rows="3" placeholder="Update comment..." required>{{ comment_to_be_updated.content }}</textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="background-color: var(--primary-color)">Update Comment</button>
+                    </form>
+                {% endif %}
+            {% endfor %}
+        {% empty %}
+            <p>No comments yet.</p>
+        {% endfor %}
+
+        {% if not comment_to_be_updated and not comment_to_be_replied %}
+            <form method="POST" class="mt-5">
+                {% csrf_token %}
+                <div class="mb-5">
+                    <textarea name="content" class="form-control" rows="3" placeholder="Add comment..." required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary" style="background-color: var(--primary-color)">Comment</button>
+            </form>
+        {% endif %}
+    </div>
+
+    <div class="mt-5">
+        <h4>Related Posts</h4>
+        {% for post in related_posts %}
+            <div class="row g-4 mt-2">
+                <div class="col-md-4">
+                    <div class="card">
+                        <img src="{{ post.image.url }}" class="card-img-top" alt="">
+                        <div class="card-body">
+                            <h6 class="card-title">{{ post.title }}</h6>
+                            <a href="{% url 'article_detail' post.slug %}" class="btn btn-sm btn-outline-primary">Read More</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <p>No related posts yet.</p>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,97 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+
+{% load static %}
+
+<section class="text-center py-5 highlight">
+    <div class="container">
+        <h1 class="hero-title">About InkWave</h1>
+        <p class="hero-subtitle">Your hub for creativity, storytelling, and inspiration across the web.</p>
+    </div>
+</section>
+
+<div class="container about-section">
+    <div class="row align-items-center mb-5">
+        <div class="col-md-6">
+            <h2>Our Story</h2>
+            <p>InkWave was born from a passion for connecting writers, readers, and thinkers from around the globe. 
+            At its core, InkWave is more than just a platform - it's a movement to celebrate creativity, 
+            encourage dialogue, and give every voice the chance to be heard. Our mission is to provide 
+            a space where ideas can flow freely, creativity can thrive, and every story finds its audience. 
+            What started as a small vision has evolved into a vibrant community where knowledge is shared, 
+            perspectives are exchanged, and storytelling becomes a bridge between cultures and generations.</p>
+
+            <p>We believe in the power of words to spark change, ignite inspiration, and connect people across borders. 
+            From thought-provoking articles and groundbreaking tech insights to deeply personal narratives, poetry, 
+            and lifestyle reflections - InkWave embraces diversity in every form. Every piece of content, 
+            whether big or small, has the ability to create an impact, and we exist to amplify those voices 
+            that might otherwise go unheard.</p>
+
+            <p>InkWave isn't just about publishing words - it's about building meaningful connections. Writers find 
+            the encouragement they need to grow, readers discover new perspectives that challenge and inspire them, 
+            and thinkers from all walks of life come together to exchange ideas. Our platform gives creators 
+            the tools they need to share, while ensuring readers can explore content that resonates with their passions. 
+            Here, curiosity doesn't just meet creativity - it flourishes.</p>
+
+            <p>At InkWave, we also believe in community. We're shaping a digital landscape that values authenticity, 
+            dialogue, and collaboration. It's not just about individual stories but about the collective narrative 
+            of people who dare to express themselves. We celebrate differences, encourage respectful discussions, 
+            and foster an environment where everyone - from seasoned authors to first-time storytellers - feels welcome.</p>
+
+            <p>As we continue to grow, our vision remains clear: to become a home for ideas that inspire, inform, and empower. 
+            Whether you're here to share your journey, explore new perspectives, or simply discover stories 
+            that leave a lasting mark, InkWave is the place where words truly come alive. 
+            Welcome to InkWave - the digital shoreline where stories never stop flowing.</p>
+
+
+        </div>
+        <div class="col-md-6">
+            <img src="{% static 'images/about-1.jpeg' %}" class="img-fluid rounded" alt="Our Story">
+        </div>
+    </div>
+
+    <div class="row text-center mb-5">
+        <div class="col-md-6">
+            <div class="p-4 border rounded">
+                <i class="fa-solid fa-bullseye fa-2x mb-3"></i>
+                <h4>Our Mission</h4>
+                <p>To empower individuals to share their stories and spark conversations that inspire change.</p>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="p-4 border rounded">
+                <i class="fa-solid fa-lightbulb fa-2x mb-3"></i>
+                <h4>Our Vision</h4>
+                <p>To be the go-to online space for diverse ideas and authentic human connection.</p>
+            </div>
+        </div>
+    </div>
+
+    <h2 class="text-center mb-4">Meet the Team</h2>
+    <div class="row text-center g-4">
+        <div class="col-md-4">
+            <div class="team-card">
+                <img src="{% static 'images/team-member-1.jpeg' %}" alt="Team Member">
+                <h5 class="mt-3">Peter Olayemi</h5>
+                <p>Founder & Developer</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="team-card">
+                <img src="{% static 'images/team-member-2.jpeg' %}" alt="Team Member">
+                <h5 class="mt-3">Sofia Martinez</h5>
+                <p>Lead Content Strategist</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="team-card">
+                <img src="{% static 'images/team-member-3.jpeg' %}" alt="Team Member">
+                <h5 class="mt-3">Ryan Lee</h5>
+                <p>Community Manager</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,100 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+
+<section class="profile-header container my-5">
+    <img src="{{ profile_user.profile_picture.url }}" 
+         alt="Profile Avatar" class="profile-avatar" />
+    <h1 class="profile-name">{{ profile_user.username }}</h1>
+    <h1 class="profile-name">{{ profile_user.email }}</h1>
+    <p class="profile-bio">{{ profile_user.bio }}</p>
+
+    <div class="profile-stats">
+        <div class="stat-item">
+            <h4>{{ articles.paginator.count }}</h4>
+            <p>Posts</p>
+        </div>
+    </div>
+
+    {% if is_owner %}
+    <div class="profile-actions">
+        <a href="{% url 'profile_update' %}" title="Edit Profile">
+            <i class="fa-solid fa-pen-to-square"></i> Edit Profile
+        </a>
+        <a href="{% url 'change_password' %}" title="Change Password">
+            <i class="fa-solid fa-key"></i> Change Password
+        </a>
+    </div>
+    {% endif %}
+</section>
+
+<div class="container my-5">
+    <h2 class="mb-4">
+        Posts by {{ profile_user.username }}
+    </h2>
+    <div class="row g-4">
+        {% for article in articles %}
+        <div class="col-md-4">
+            <div class="card post-card">
+                <img src="{{ article.image.url }}" 
+                     class="card-img-top" alt="{{ article.title }}" />
+                <div class="card-body">
+                    <h5 class="card-title">{{ article.title }}</h5>
+                    <p class="card-text">{{ article.content|truncatewords:20 }}</p>
+                    <a href="{{ article.get_absolute_url }}" class="btn btn-primary btn-sm">Read More</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p>No posts yet.</p>
+        {% endfor %}
+    </div>
+
+    {% if articles.paginator.num_pages > 1 %}
+    <section id="blog-pagination" class="blog-pagination section mt-4">
+        <div class="container">
+            <div class="d-flex justify-content-center">
+                <ul>
+                    {% if articles.has_previous %}
+                        <li>
+                            <a href="?page={{ articles.previous_page_number }}">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </a>
+                        </li>
+                    {% endif %}
+
+                    {% if articles.number > 4 %}
+                        <li>...</li>
+                    {% endif %}
+
+                    {% for num in articles.paginator.page_range %}
+                        {% if num >= articles.number|add:"-2" and num <= articles.number|add:"2" %}
+                            <li>
+                                {% if articles.number == num %}
+                                    <a href="?page={{ num }}" class="active">{{ num }}</a>
+                                {% else %}
+                                    <a href="?page={{ num }}">{{ num }}</a>
+                                {% endif %}
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if articles.number < articles.paginator.num_pages|add:"-3" %}
+                        <li>...</li>
+                    {% endif %}
+
+                    {% if articles.has_next %}
+                        <li>
+                            <a href="?page={{ articles.next_page_number }}">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </section>
+    {% endif %}
+</div>
+
+{% endblock %}

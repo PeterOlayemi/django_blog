@@ -1,0 +1,36 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="confirm-card bg-white light-mode text-dark p-4 rounded shadow-sm">
+        <h3 class="mb-4 text-danger">
+            <i class="fa-solid fa-triangle-exclamation"></i> Confirm Delete
+        </h3>
+        <p class="mb-4">
+            You are about to permanently delete the following article. 
+            This action <strong>cannot</strong> be undone. Please make sure you really want to delete it.
+        </p>
+        
+        <div class="article-preview mb-4">
+            <h5>{{ article.title }}</h5>
+            <p class="mb-1">
+                <small class="text-muted">
+                    <i class="fa-regular fa-calendar"></i> {{ article.date_added|date:"M d, Y" }} 
+                    by {{ article.writer }}
+                </small>
+            </p>
+            <p>{{ article.content|truncatewords:20 }}</p>
+        </div>
+
+        <form method="post" class="d-flex justify-content-end gap-2">
+            {% csrf_token %}
+            <a href="{% url 'article_detail' article.slug %}" class="btn btn-secondary">
+                <i class="fa-solid fa-arrow-left"></i> Cancel
+            </a>
+            <button type="submit" class="btn btn-danger">
+                <i class="fa-solid fa-trash"></i> Yes, Delete
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

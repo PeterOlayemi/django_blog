@@ -1,0 +1,19 @@
+Hi {{user_name}},
+
+Welcome to {{site_name}}!  
+To complete your registration and activate your account, please verify your email address by clicking the link below:
+
+https://{{ domain }}{% url 'activate' uidb64=uid token=token %}
+
+For your security, this link will expire in {{expiry_hours}} hours. If it expires, you’ll need to request a new verification email.
+
+If you did not create an account with {{site_name}}, you can ignore this message.
+
+Thanks for joining us,  
+The {{site_name}} Team
+
+---
+
+Security reminder:
+- We will never ask you for your password in an email.
+- Only click verification links from trusted sources.
